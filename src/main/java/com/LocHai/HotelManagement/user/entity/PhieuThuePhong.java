@@ -3,9 +3,9 @@ package com.LocHai.HotelManagement.user.entity;
 import com.LocHai.HotelManagement.user.enum2.TrangThaiPhieuThue;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.math.BigDecimal;
+
 import java.sql.Date;
-import java.sql.Timestamp;
+
 import java.util.List;
 
 @Data
@@ -56,6 +56,22 @@ public class PhieuThuePhong {
     )
     List<Phong> phong;
 
+    public PhieuThuePhong() {
+    }
+
+    public PhieuThuePhong(int idPhieuThuePhong, List<Phong> phong, HoaDonThanhToan hoaDonThanhToan, PhieuThueDichVu phieuThueDichVu, double tongTien, TaiKhoan taiKhoan, TrangThaiPhieuThue trangThaiPhieuThePhong, Date ngayTraPhong, Date ngayNhanPhong, Date ngayDatPhong) {
+        this.idPhieuThuePhong = idPhieuThuePhong;
+        this.phong = phong;
+        this.hoaDonThanhToan = hoaDonThanhToan;
+        this.phieuThueDichVu = phieuThueDichVu;
+        this.tongTien = tongTien;
+        this.taiKhoan = taiKhoan;
+        this.trangThaiPhieuThePhong = trangThaiPhieuThePhong;
+        this.ngayTraPhong = ngayTraPhong;
+        this.ngayNhanPhong = ngayNhanPhong;
+        this.ngayDatPhong = ngayDatPhong;
+    }
+
     public int getIdPhieuThuePhong() {
         return idPhieuThuePhong;
     }
@@ -64,20 +80,44 @@ public class PhieuThuePhong {
         this.idPhieuThuePhong = idPhieuThuePhong;
     }
 
-    public Date getNgayDatPhong() {
-        return ngayDatPhong;
+    public List<Phong> getPhong() {
+        return phong;
     }
 
-    public void setNgayDatPhong(Date ngayDatPhong) {
-        this.ngayDatPhong = ngayDatPhong;
+    public void setPhong(List<Phong> phong) {
+        this.phong = phong;
     }
 
-    public Date getNgayNhanPhong() {
-        return ngayNhanPhong;
+    public HoaDonThanhToan getHoaDonThanhToan() {
+        return hoaDonThanhToan;
     }
 
-    public void setNgayNhanPhong(Date ngayNhanPhong) {
-        this.ngayNhanPhong = ngayNhanPhong;
+    public void setHoaDonThanhToan(HoaDonThanhToan hoaDonThanhToan) {
+        this.hoaDonThanhToan = hoaDonThanhToan;
+    }
+
+    public PhieuThueDichVu getPhieuThueDichVu() {
+        return phieuThueDichVu;
+    }
+
+    public void setPhieuThueDichVu(PhieuThueDichVu phieuThueDichVu) {
+        this.phieuThueDichVu = phieuThueDichVu;
+    }
+
+    public TaiKhoan getTaiKhoan() {
+        return taiKhoan;
+    }
+
+    public void setTaiKhoan(TaiKhoan taiKhoan) {
+        this.taiKhoan = taiKhoan;
+    }
+
+    public double getTongTien() {
+        return tongTien;
+    }
+
+    public void setTongTien(double tongTien) {
+        this.tongTien = tongTien;
     }
 
     public TrangThaiPhieuThue getTrangThaiPhieuThePhong() {
@@ -96,43 +136,19 @@ public class PhieuThuePhong {
         this.ngayTraPhong = ngayTraPhong;
     }
 
-    public double getTongTien() {
-        return tongTien;
+    public Date getNgayNhanPhong() {
+        return ngayNhanPhong;
     }
 
-    public void setTongTien(double tongTien) {
-        this.tongTien = tongTien;
+    public void setNgayNhanPhong(Date ngayNhanPhong) {
+        this.ngayNhanPhong = ngayNhanPhong;
     }
 
-    public TaiKhoan getTaiKhoan() {
-        return taiKhoan;
+    public Date getNgayDatPhong() {
+        return ngayDatPhong;
     }
 
-    public void setTaiKhoan(TaiKhoan taiKhoan) {
-        this.taiKhoan = taiKhoan;
-    }
-
-    public PhieuThueDichVu getPhieuThueDichVu() {
-        return phieuThueDichVu;
-    }
-
-    public void setPhieuThueDichVu(PhieuThueDichVu phieuThueDichVu) {
-        this.phieuThueDichVu = phieuThueDichVu;
-    }
-
-    public HoaDonThanhToan getHoaDonThanhToan() {
-        return hoaDonThanhToan;
-    }
-
-    public void setHoaDonThanhToan(HoaDonThanhToan hoaDonThanhToan) {
-        this.hoaDonThanhToan = hoaDonThanhToan;
-    }
-
-    public List<Phong> getPhong() {
-        return phong;
-    }
-
-    public void setPhong(List<Phong> phong) {
-        this.phong = phong;
+    public void setNgayDatPhong(Date ngayDatPhong) {
+        this.ngayDatPhong = ngayDatPhong;
     }
 }

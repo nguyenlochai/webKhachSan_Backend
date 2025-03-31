@@ -1,20 +1,30 @@
 package com.LocHai.HotelManagement.user.controller;
 
 import com.LocHai.HotelManagement.user.config.VNPayConfig;
+import com.LocHai.HotelManagement.user.dto.DatPhongRequest;
 import com.LocHai.HotelManagement.user.dto.PaymentResDto;
 import com.LocHai.HotelManagement.user.dto.TransactionStatusDto;
+import com.LocHai.HotelManagement.user.entity.PhieuThuePhong;
 import com.LocHai.HotelManagement.user.entity.Phong;
+import com.LocHai.HotelManagement.user.entity.TaiKhoan;
+import com.LocHai.HotelManagement.user.enum2.TrangThaiPhieuThue;
+import com.LocHai.HotelManagement.user.repository.PhieuThuePhongRepositoty;
+import com.LocHai.HotelManagement.user.repository.TaiKhoanRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RestController
@@ -22,12 +32,37 @@ import java.util.*;
 @CrossOrigin(origins = "*")
 public class ThanhToanController {
 
+    @Autowired
+    TaiKhoanRepository taiKhoanRepository;
+
+    @Autowired
+    PhieuThuePhongRepositoty phieuThuePhongRepositoty;
+
     @PostMapping("")
-    public ResponseEntity<?> createPayment(HttpServletRequest req ,HttpServletResponse response, @RequestBody Phong phong) throws UnsupportedEncodingException {
+    public ResponseEntity<?> createPayment(HttpServletRequest req ,HttpServletResponse response, @RequestBody DatPhongRequest datPhongRequest) throws UnsupportedEncodingException {
 
         String orderType = "other";
-        long amount = (long) phong.getGiaPhong()*100;
+        long amount = (long) datPhongRequest.getPhong().getGiaPhong()*100;
         String bankCode = req.getParameter("bankCode");
+
+
+
+        PhieuThuePhong phieuThuePhong = new PhieuThuePhong();
+        phieuThuePhong.setNgayDatPhong(new Date(System.currentTimeMillis()));
+        phieuThuePhong.setNgayNhanPhong(datPhongRequest.getCheckInDate());
+        phieuThuePhong.setNgayTraPhong(datPhongRequest.getCheckOutDate());
+        phieuThuePhong.setTrangThaiPhieuThePhong(TrangThaiPhieuThue.DA_DAT);
+
+        phieuThuePhong.setTongTien(datPhongRequest.getPhong().getGiaPhong());
+        Integer idTaiKhoan = datPhongRequest.getIdTaiKhoan();
+        TaiKhoan tk = taiKhoanRepository.findById(idTaiKhoan)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản"));
+        phieuThuePhong.setTaiKhoan(tk);
+
+        phieuThuePhongRepositoty.save(phieuThuePhong);
+
+
+
 
 
         String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
@@ -100,26 +135,23 @@ public class ThanhToanController {
     }
 
     @GetMapping("/payment/info")
-    public ResponseEntity<?> transaction(@RequestParam(value = "vnp_Amount") String amount,
-                                         @RequestParam(value = "vnp_BankCode") String bankCode,
-                                         @RequestParam(value = "vnp_OrderInfo") String order,
-                                         @RequestParam(value = "vnp_ResponseCode") String responseCode
+    public void transaction(
+            @RequestParam("vnp_Amount") String amount,
+            @RequestParam("vnp_BankCode") String bankCode,
+            @RequestParam("vnp_OrderInfo") String order,
+            @RequestParam("vnp_ResponseCode") String responseCode,
+            HttpServletResponse response
+    ) throws IOException {
+        // Encode order để tránh lỗi dấu cách và ký tự đặc biệt
+        String encodedOrder = URLEncoder.encode(order, "UTF-8");
 
-    ){
-        TransactionStatusDto transactionStatusDto = new TransactionStatusDto();
-        if(responseCode.equals("00")){
-            transactionStatusDto.setStatus("okkkkkkk");
-            transactionStatusDto.setMessage("Thành công");
-            transactionStatusDto.setData("");
+        String redirectUrl = String.format(
+                "http://localhost:3000/payment/result?vnp_Amount=%s&vnp_BankCode=%s&vnp_OrderInfo=%s&vnp_ResponseCode=%s",
+                amount, bankCode, encodedOrder, responseCode
+        );
 
-
-
-        }else {
-            transactionStatusDto.setStatus("No");
-            transactionStatusDto.setMessage("Failed");
-            transactionStatusDto.setData("");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(transactionStatusDto);
+        response.sendRedirect(redirectUrl);
     }
+
 
 }
