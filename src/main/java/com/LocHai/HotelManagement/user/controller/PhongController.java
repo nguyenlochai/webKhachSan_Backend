@@ -5,8 +5,10 @@ import com.LocHai.HotelManagement.user.Service.PhongService;
 
 import com.LocHai.HotelManagement.user.entity.Phong;
 
+import jakarta.persistence.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -33,5 +35,11 @@ public class PhongController {
     ) {
         return phongService.getAvailablePhong(startDate, endDate, sucChua);
     }
+
+//    @PostMapping("/themPhong")
+//    public ResponseEntity<Phong> themPhong(@RequestBody Phong phong) {
+//        phong.s
+//
+//    }
 
 }

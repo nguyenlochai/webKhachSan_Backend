@@ -23,6 +23,12 @@ public class DichVu {
     @Column(name = "mo_ta", columnDefinition = "text")
     private String moTa;
 
+    @Column(name = "so_luong")
+    private int soLuong;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Enumerated(EnumType.STRING) // Lưu Enum dưới dạng chuỗi (VARCHAR)
     @Column(name = "trang_thai")
     private TrangThaiDichVu trangThai;
@@ -32,6 +38,17 @@ public class DichVu {
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "id_phieu_thue_dich_vu", nullable = false) // cột này không được null
     private PhieuThueDichVu phieuThueDichVu;
+
+    public DichVu() {
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public int getIdDichVu() {
         return idDichVu;
@@ -55,6 +72,14 @@ public class DichVu {
 
     public void setTrangThai(TrangThaiDichVu trangThai) {
         this.trangThai = trangThai;
+    }
+
+    public int getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
     }
 
     public String getMoTa() {

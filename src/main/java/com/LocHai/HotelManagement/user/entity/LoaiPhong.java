@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "loai_phong")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LoaiPhong {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,16 +22,19 @@ public class LoaiPhong {
     @OneToMany(mappedBy = "loaiPhong", cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
-    }, fetch = FetchType.EAGER, orphanRemoval = true)
+    }, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnoreProperties("loaiPhong")
     private List<TienNghi> danhSachTienNghi;
 
     @OneToMany(mappedBy = "loaiPhong", cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
-    }, fetch = FetchType.EAGER)
+    }, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("loaiPhong")
     private List<Phong> danhSachPhong;
+
+    public LoaiPhong() {
+    }
 
     public int getIdLoaiPhong() {
         return idLoaiPhong;
@@ -40,12 +44,12 @@ public class LoaiPhong {
         this.idLoaiPhong = idLoaiPhong;
     }
 
-    public List<Phong> getDanhSachPhong() {
-        return danhSachPhong;
+    public String getTenLoaiPhong() {
+        return tenLoaiPhong;
     }
 
-    public void setDanhSachPhong(List<Phong> danhSachPhong) {
-        this.danhSachPhong = danhSachPhong;
+    public void setTenLoaiPhong(String tenLoaiPhong) {
+        this.tenLoaiPhong = tenLoaiPhong;
     }
 
     public List<TienNghi> getDanhSachTienNghi() {
@@ -56,11 +60,11 @@ public class LoaiPhong {
         this.danhSachTienNghi = danhSachTienNghi;
     }
 
-    public String getTenLoaiPhong() {
-        return tenLoaiPhong;
+    public List<Phong> getDanhSachPhong() {
+        return danhSachPhong;
     }
 
-    public void setTenLoaiPhong(String tenLoaiPhong) {
-        this.tenLoaiPhong = tenLoaiPhong;
+    public void setDanhSachPhong(List<Phong> danhSachPhong) {
+        this.danhSachPhong = danhSachPhong;
     }
 }

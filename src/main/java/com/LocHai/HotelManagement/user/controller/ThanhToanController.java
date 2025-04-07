@@ -9,6 +9,7 @@ import com.LocHai.HotelManagement.user.entity.Phong;
 import com.LocHai.HotelManagement.user.entity.TaiKhoan;
 import com.LocHai.HotelManagement.user.enum2.TrangThaiPhieuThue;
 import com.LocHai.HotelManagement.user.repository.PhieuThuePhongRepositoty;
+import com.LocHai.HotelManagement.user.repository.PhongRepository;
 import com.LocHai.HotelManagement.user.repository.TaiKhoanRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,6 +39,9 @@ public class ThanhToanController {
     @Autowired
     PhieuThuePhongRepositoty phieuThuePhongRepositoty;
 
+    @Autowired
+    PhongRepository phongRepository;
+
     @PostMapping("")
     public ResponseEntity<?> createPayment(HttpServletRequest req ,HttpServletResponse response, @RequestBody DatPhongRequest datPhongRequest) throws UnsupportedEncodingException {
 
@@ -59,7 +63,14 @@ public class ThanhToanController {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy tài khoản"));
         phieuThuePhong.setTaiKhoan(tk);
 
+        List<Phong> phongs = phongRepository.findAllById(Collections.singleton(datPhongRequest.getPhong().getIdPhong()));
+        phieuThuePhong.setPhong(phongs);
+
+
         phieuThuePhongRepositoty.save(phieuThuePhong);
+
+
+
 
 
 
