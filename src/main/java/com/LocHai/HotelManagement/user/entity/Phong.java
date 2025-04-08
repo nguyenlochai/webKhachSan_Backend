@@ -29,7 +29,7 @@ public class Phong {
     @Column(name = "so_phong")
     private int soPhong;
 
-    @Column(name = "mo-ta", columnDefinition = "TEXT")
+    @Column(name = "mo_ta", columnDefinition = "TEXT")
     private String moTa;
 
     @Enumerated(EnumType.STRING) // Lưu Enum dưới dạng chuỗi (VARCHAR)

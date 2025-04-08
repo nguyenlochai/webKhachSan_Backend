@@ -1,5 +1,10 @@
 package com.LocHai.HotelManagement.user.dto;
 
+import com.LocHai.HotelManagement.user.entity.HinhAnh;
+import com.LocHai.HotelManagement.user.entity.LoaiPhong;
+
+import java.util.List;
+
 public class PhongDto {
     private int idPhong;
     private double giaPhong;
@@ -8,6 +13,25 @@ public class PhongDto {
     private int soPhong;
     private String moTa;
     private String tinhTrangPhong; // Lưu enum dưới dạng String
+
+    private LoaiPhong loaiPhong;
+    private List<HinhAnh> danhSachHinhAnh;
+
+    public LoaiPhong getLoaiPhong() {
+        return loaiPhong;
+    }
+
+    public void setLoaiPhong(LoaiPhong loaiPhong) {
+        this.loaiPhong = loaiPhong;
+    }
+
+    public List<HinhAnh> getDanhSachHinhAnh() {
+        return danhSachHinhAnh;
+    }
+
+    public void setDanhSachHinhAnh(List<HinhAnh> danhSachHinhAnh) {
+        this.danhSachHinhAnh = danhSachHinhAnh;
+    }
 
     public int getIdPhong() {
         return idPhong;
