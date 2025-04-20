@@ -1,11 +1,15 @@
 package com.LocHai.HotelManagement.user.entity;
 
 import com.LocHai.HotelManagement.user.enum2.GioiTinh;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 
 import java.util.List;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "tai_khoan")
 public class TaiKhoan {
@@ -42,20 +46,38 @@ public class TaiKhoan {
             joinColumns = @JoinColumn(name="id_tai_khoan"),
             inverseJoinColumns = @JoinColumn(name = "id_quyen")
     )
+    @JsonIgnore
     private List<Quyen> danhSachQuyen;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "taiKhoan", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
     private List<PhieuThueDichVu> danhSachPhieuThueDichVu;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "taiKhoan", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
+    @JsonManagedReference
     private List<PhieuThuePhong> danhSachPhieuThuePhong;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "taiKhoan", fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    }, orphanRemoval = true)
+    private List<BinhLuan> danhSachBinhLuan;
+
+    public List<BinhLuan> getDanhSachBinhLuan() {
+        return danhSachBinhLuan;
+    }
+
+    public void setDanhSachBinhLuan(List<BinhLuan> danhSachBinhLuan) {
+        this.danhSachBinhLuan = danhSachBinhLuan;
+    }
 
     public int getIdTaiKhoan() {
         return idTaiKhoan;

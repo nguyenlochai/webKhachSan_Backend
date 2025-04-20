@@ -1,12 +1,17 @@
 package com.LocHai.HotelManagement.user.entity;
 
 import com.LocHai.HotelManagement.user.enum2.TrangThaiDichVu;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 
 @Entity
 @Table(name = "dich_vu")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class DichVu {
 
     @Id
@@ -33,22 +38,14 @@ public class DichVu {
     @Column(name = "trang_thai")
     private TrangThaiDichVu trangThai;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {
+
+    @OneToMany(mappedBy = "dichVu", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH})
-    @JoinColumn(name = "id_phieu_thue_dich_vu", nullable = false) // cột này không được null
-    private PhieuThueDichVu phieuThueDichVu;
+            CascadeType.DETACH, CascadeType.REFRESH
+    }, orphanRemoval = true)
+    @JsonIgnore
+    private List<PhieuThueDichVu> phieuThueDichVus;
 
-    public DichVu() {
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
     public int getIdDichVu() {
         return idDichVu;
@@ -58,12 +55,12 @@ public class DichVu {
         this.idDichVu = idDichVu;
     }
 
-    public PhieuThueDichVu getPhieuThueDichVu() {
-        return phieuThueDichVu;
+    public List<PhieuThueDichVu> getPhieuThueDichVus() {
+        return phieuThueDichVus;
     }
 
-    public void setPhieuThueDichVu(PhieuThueDichVu phieuThueDichVu) {
-        this.phieuThueDichVu = phieuThueDichVu;
+    public void setPhieuThueDichVus(List<PhieuThueDichVu> phieuThueDichVus) {
+        this.phieuThueDichVus = phieuThueDichVus;
     }
 
     public TrangThaiDichVu getTrangThai() {
@@ -72,6 +69,14 @@ public class DichVu {
 
     public void setTrangThai(TrangThaiDichVu trangThai) {
         this.trangThai = trangThai;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public int getSoLuong() {

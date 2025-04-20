@@ -62,6 +62,22 @@ public class Phong {
     )
     private List<PhieuThuePhong> danhSachPhieuThuePhong;
 
+
+    @OneToMany(mappedBy = "phong", fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.DETACH, CascadeType.REFRESH
+    }, orphanRemoval = true)
+    @JsonIgnore
+    private List<BinhLuan> danhSachBinhLuan;
+
+    public List<BinhLuan> getDanhSachBinhLuan() {
+        return danhSachBinhLuan;
+    }
+
+    public void setDanhSachBinhLuan(List<BinhLuan> danhSachBinhLuan) {
+        this.danhSachBinhLuan = danhSachBinhLuan;
+    }
+
     public int getIdPhong() {
         return idPhong;
     }

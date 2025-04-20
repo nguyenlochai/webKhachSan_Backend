@@ -1,16 +1,10 @@
 package com.LocHai.HotelManagement.user.controller;
 
 import com.LocHai.HotelManagement.user.config.VNPayConfig;
-import com.LocHai.HotelManagement.user.dto.DatPhongRequest;
-import com.LocHai.HotelManagement.user.dto.PaymentResDto;
-import com.LocHai.HotelManagement.user.dto.TransactionStatusDto;
-import com.LocHai.HotelManagement.user.entity.PhieuThuePhong;
-import com.LocHai.HotelManagement.user.entity.Phong;
-import com.LocHai.HotelManagement.user.entity.TaiKhoan;
+import com.LocHai.HotelManagement.user.dto.*;
+import com.LocHai.HotelManagement.user.entity.*;
 import com.LocHai.HotelManagement.user.enum2.TrangThaiPhieuThue;
-import com.LocHai.HotelManagement.user.repository.PhieuThuePhongRepositoty;
-import com.LocHai.HotelManagement.user.repository.PhongRepository;
-import com.LocHai.HotelManagement.user.repository.TaiKhoanRepository;
+import com.LocHai.HotelManagement.user.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +36,18 @@ public class ThanhToanController {
     @Autowired
     PhongRepository phongRepository;
 
+    @Autowired
+    DichVuRepository dichVuRepository;
+
+    @Autowired
+    PhieuThueDichVuRepository phieuThueDichVuRepository;
+
     @PostMapping("")
     public ResponseEntity<?> createPayment(HttpServletRequest req ,HttpServletResponse response, @RequestBody DatPhongRequest datPhongRequest) throws UnsupportedEncodingException {
 
         String orderType = "other";
         long amount = (long) datPhongRequest.getPhong().getGiaPhong()*100;
         String bankCode = req.getParameter("bankCode");
-
-
 
         PhieuThuePhong phieuThuePhong = new PhieuThuePhong();
         phieuThuePhong.setNgayDatPhong(new Date(System.currentTimeMillis()));
@@ -69,13 +67,6 @@ public class ThanhToanController {
 
         phieuThuePhongRepositoty.save(phieuThuePhong);
 
-
-
-
-
-
-
-
         String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
         String vnp_IpAddr = VNPayConfig.getIpAddress(req);
         String vnp_TmnCode = VNPayConfig.vnp_TmnCode;
@@ -93,10 +84,7 @@ public class ThanhToanController {
         vnp_Params.put("vnp_BankCode", "NCB");
         vnp_Params.put("vnp_Locale", "vn");
 
-
-
         vnp_Params.put("vnp_OrderType", orderType);
-
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -163,6 +151,27 @@ public class ThanhToanController {
 
         response.sendRedirect(redirectUrl);
     }
+
+    @PostMapping("/payment/dichVu")
+    public ResponseEntity<?> thanhToanDichVu(@RequestBody DichVuDto dichVu) throws IOException, ThongBaoResDto {
+        if (dichVu == null){
+            return  ResponseEntity.badRequest().body("không có dịch vụ");
+
+        }
+        TaiKhoan taiKhoan = taiKhoanRepository.findById(dichVu.getIdTaiKhoan()).orElseThrow(() -> new ThongBaoResDto("Tài khoản không tồn tại"));
+        DichVu dichVunew = dichVuRepository.findById(dichVu.getIdDichVu()).orElseThrow(() -> new ThongBaoResDto("Dịch vụ phòng không tồn tại!"));
+
+        PhieuThueDichVu phieuThueDichVuNew = new PhieuThueDichVu();
+        phieuThueDichVuNew.setDichVu(dichVunew);
+        phieuThueDichVuNew.setTaiKhoan(taiKhoan);
+        phieuThueDichVuNew.setTongTien(dichVunew.getGiaDichVu());
+        PhieuThueDichVu phieuThueDichVu = phieuThueDichVuRepository.save(phieuThueDichVuNew);
+        return ResponseEntity.ok(phieuThueDichVu);
+
+    }
+
+
+
 
 
 }

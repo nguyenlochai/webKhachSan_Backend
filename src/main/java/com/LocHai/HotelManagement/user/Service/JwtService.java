@@ -33,6 +33,7 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         TaiKhoan taiKhoan = userService.findByUsername(tenDangNhap);
         int idTaiKhoan = taiKhoan.getIdTaiKhoan();
+        String tenTaiKHoan = taiKhoan.getHoTen();
 
 
         boolean isAdmin = false;
@@ -57,6 +58,7 @@ public class JwtService {
         claims.put("isStaff", isStaff);
         claims.put("isUser", isUser);
         claims.put("idTaiKhoan", idTaiKhoan);
+        claims.put("tenTaiKhoan", tenTaiKHoan);
 
 
         return CreateToken(claims, tenDangNhap);

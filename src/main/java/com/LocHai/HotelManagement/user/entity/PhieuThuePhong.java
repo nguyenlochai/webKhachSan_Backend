@@ -1,6 +1,8 @@
 package com.LocHai.HotelManagement.user.entity;
 
 import com.LocHai.HotelManagement.user.enum2.TrangThaiPhieuThue;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -8,6 +10,7 @@ import java.sql.Date;
 
 import java.util.List;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @Entity
 @Table(name = "phieu_thue_phong")
@@ -37,6 +40,7 @@ public class PhieuThuePhong {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "id_tai_khoan", nullable = false)
+    @JsonBackReference
     private TaiKhoan taiKhoan;
 
     @OneToOne(mappedBy = "phieuThuePhong", cascade = CascadeType.ALL)

@@ -28,7 +28,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,16 +61,18 @@ public class PhongController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
+            // dịa chỉ lưu
             String uploadDir = "src/main/resources/static/images/";
+            // đặt lại tên file tránh trùng lập
             String fileName = System.currentTimeMillis() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
-
+            // lưu uploadDir + fileName vào path
             Path path = Paths.get(uploadDir + fileName);
-            Files.createDirectories(path.getParent()); // nếu chưa tồn tại thư mục
-
+            // Nếu thư mục cha (images/) chưa tồn tại → tạo mới
+            Files.createDirectories(path.getParent());
+            // Ghi nội dung file ảnh vào đúng path trên server (lưu)
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
-            String imageUrl = "/images/" + fileName;
-
+            String imageUrl = "images/" + fileName;
             return ResponseEntity.ok().body(Map.of(
                     "tenHinhAnh", fileName,
                     "duongDan", imageUrl
@@ -84,6 +85,7 @@ public class PhongController {
 
 
     @PostMapping("/themPhong")
+    // phong nhận được giá, tên, sức chứa, số phòng, mô tả, loại phòng, danh sách hình ảnh (tên hình ảnh, đường dẫn)
     public ResponseEntity<?> themPhong(@RequestBody PhongDto phong) throws ThongBaoResDto {
         LoaiPhong loaiPhongInput = phong.getLoaiPhong();
         if (loaiPhongInput == null || loaiPhongInput.getIdLoaiPhong() == 0) {
@@ -109,4 +111,35 @@ public class PhongController {
         Phong savedRoom = phongRepository.save(newRoom);
         return ResponseEntity.ok(savedRoom);
     }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> xoaPhong(@PathVariable int id) {
+        if (!phongRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();  // 404 nếu không có phòng
+        }
+        phongRepository.deleteById(id);
+        return ResponseEntity.noContent().build(); // 204 nếu xóa thành công
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> capNhatPhong(@PathVariable int id, @RequestBody Phong phongMoi) {
+        Optional<Phong> phongCuOpt = phongRepository.findById(id);
+        if (phongCuOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Phong phongCu = phongCuOpt.get();
+        phongCu.setTenPhong(phongMoi.getTenPhong());
+        phongCu.setSoPhong(phongMoi.getSoPhong());
+        phongCu.setSucChua(phongMoi.getSucChua());
+        phongCu.setGiaPhong(phongMoi.getGiaPhong());
+        phongCu.setTinhTrangPhong(phongMoi.getTinhTrangPhong());
+
+        phongRepository.save(phongCu);
+
+        return ResponseEntity.ok(phongCu);
+    }
+
+
 }

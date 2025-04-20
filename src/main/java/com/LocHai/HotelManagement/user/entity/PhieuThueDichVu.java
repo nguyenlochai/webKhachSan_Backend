@@ -2,12 +2,14 @@ package com.LocHai.HotelManagement.user.entity;
 
 import com.LocHai.HotelManagement.user.enum2.TinhTrangPhong;
 import com.LocHai.HotelManagement.user.enum2.TrangThaiPhieuThue;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Date;
 import java.util.List;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Data
 @Entity
 @Table(name = "phieu_thue_dich_vu")
@@ -34,11 +36,9 @@ public class PhieuThueDichVu {
     @Column(name = "tong_tien")
     private double tongTien;
 
-    @OneToMany(mappedBy = "phieuThueDichVu", fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.DETACH, CascadeType.REFRESH
-    }, orphanRemoval = true)
-    List<DichVu> danhSachDichVu;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_dich_vu", nullable = false)
+    private DichVu dichVu;
 
     @OneToOne(mappedBy = "phieuThueDichVu",cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
@@ -57,8 +57,83 @@ public class PhieuThueDichVu {
     @JoinColumn(name = "id_tai_khoan", nullable = false)
     private TaiKhoan taiKhoan;
 
+    public int getIdPhieuThueDichVu() {
+        return idPhieuThueDichVu;
+    }
 
+    public void setIdPhieuThueDichVu(int idPhieuThueDichVu) {
+        this.idPhieuThueDichVu = idPhieuThueDichVu;
+    }
 
+    public TaiKhoan getTaiKhoan() {
+        return taiKhoan;
+    }
 
+    public void setTaiKhoan(TaiKhoan taiKhoan) {
+        this.taiKhoan = taiKhoan;
+    }
 
+    public PhieuThuePhong getPhieuThuePhong() {
+        return phieuThuePhong;
+    }
+
+    public void setPhieuThuePhong(PhieuThuePhong phieuThuePhong) {
+        this.phieuThuePhong = phieuThuePhong;
+    }
+
+    public HoaDonThanhToan getHoaDonThanhToan() {
+        return hoaDonThanhToan;
+    }
+
+    public void setHoaDonThanhToan(HoaDonThanhToan hoaDonThanhToan) {
+        this.hoaDonThanhToan = hoaDonThanhToan;
+    }
+
+    public DichVu getDichVu() {
+        return dichVu;
+    }
+
+    public void setDichVu(DichVu dichVu) {
+        this.dichVu = dichVu;
+    }
+
+    public double getTongTien() {
+        return tongTien;
+    }
+
+    public void setTongTien(double tongTien) {
+        this.tongTien = tongTien;
+    }
+
+    public TrangThaiPhieuThue getTrangThaiPhieuTheDichVu() {
+        return trangThaiPhieuTheDichVu;
+    }
+
+    public void setTrangThaiPhieuTheDichVu(TrangThaiPhieuThue trangThaiPhieuTheDichVu) {
+        this.trangThaiPhieuTheDichVu = trangThaiPhieuTheDichVu;
+    }
+
+    public Date getThoiGianNhanDichVu() {
+        return thoiGianNhanDichVu;
+    }
+
+    public void setThoiGianNhanDichVu(Date thoiGianNhanDichVu) {
+        this.thoiGianNhanDichVu = thoiGianNhanDichVu;
+    }
+
+    public Date getNgayDat() {
+        return ngayDat;
+    }
+
+    public void setNgayDat(Date ngayDat) {
+        this.ngayDat = ngayDat;
+    }
+
+    public int getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
+    }
 }
