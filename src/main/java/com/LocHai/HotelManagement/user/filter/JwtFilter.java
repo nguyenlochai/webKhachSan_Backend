@@ -31,6 +31,14 @@ public class JwtFilter extends OncePerRequestFilter {
     //Phương thức này sẽ được gọi cho mỗi yêu cầu HTTP. Nó có trách nhiệm kiểm tra JWT và xác thực người dùng.
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+        if (path.startsWith("/images/") || path.startsWith("/css/") || path.startsWith("/js/") || path.startsWith("/static/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+
         //sẽ lấy giá trị của header "Authorization" từ yêu cầu HTTP. Giá trị này thường chứa token xác thực, thường là JWT (JSON Web Token).
         // phần file SachForm (react) có gởi 'Authorization': `Bearer ${token}`,
         String authHeader = request.getHeader("Authorization");
